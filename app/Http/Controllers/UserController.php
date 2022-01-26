@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Services\UserService;
 use Illuminate\Support\Facades\Auth;
@@ -10,11 +11,11 @@ use Laravel\Socialite\Facades\Socialite;
 class UserController extends Controller
 {
 
-    public UserService $service;
+    public UserService $userService;
 
     public function __construct()
     {
-        $this->service = new UserService();
+        $this->userService = new UserService();
     }
 
     public function login()
@@ -23,8 +24,8 @@ class UserController extends Controller
     }
     public function loginWithEmail(UserRequest $request)
     {
-        if($this->service->isUser($request)){
-            return $this->service->redirectDashboard();
+        if($this->userService->isUser($request)){
+            return $this->userService->redirectDashboard();
         }else{
             return redirect()->back()->withErrors("Invalid email/password.");
         }
@@ -39,7 +40,7 @@ class UserController extends Controller
     {
         $user = Socialite::driver("google")->user();
         if($user){
-            return $this->service->saveOrCreateUserForGoogle($user);
+            return $this->userService->saveOrCreateUserForGoogle($user);
         }
 
         return abort(500);
@@ -50,5 +51,16 @@ class UserController extends Controller
 
         Auth::logout();
         return redirect("/login");
+    }
+
+    public function register()
+    {
+        return view("auth.register");
+    }
+
+    public function registerPost(UserRegisterRequest $request)
+    {
+        $this->userService->createUserWithRegister($request);
+        return redirect("/login")->with("success","Kaydınız başarılı bir şekilde yapılmıştır.");
     }
 }

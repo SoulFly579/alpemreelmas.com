@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class is_admin
 {
@@ -16,6 +17,11 @@ class is_admin
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        if(Auth::user() && Auth::user()->is_admin == 1){
+            return $next($request);
+        }else{
+            return redirect("/");
+        }
+
     }
 }

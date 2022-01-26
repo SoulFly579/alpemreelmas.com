@@ -2,13 +2,18 @@
 
 namespace App\Http\Services;
 
+use App\Http\Repositories\Classes\UserRepository;
 use App\Http\Requests\UserRequest;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
-class UserService{
+class UserService extends Service {
+
+    public UserRepository $userRepository;
+
+    public function __construct()
+    {
+        $this->userRepository = new UserRepository();
+    }
 
     public function isUser(UserRequest $request)
     {
@@ -27,19 +32,17 @@ class UserService{
 
     public function saveOrCreateUserForGoogle($userFromGoogle)
     {
-        // TODO UserRepostory ile yap.
-        $user = User::where("email",$userFromGoogle->email)->first();
-        if(!$user){
-            $user = new User();
-            $user->username = $userFromGoogle->name;
-            $user->email = $userFromGoogle->email;
-            $user->password = Hash::make(Str::random(12));
-            $user->is_admin = false;
-            $user->save();
+        if(!($user = $this->userRepository->findByEmail($userFromGoogle->email))){
+            $user = $this->userRepository->createForGoogle($userFromGoogle);
         }
-
         Auth::login($user,false);
-
         return $this->redirectDashboard();
     }
+
+    public function createUserWithRegister($request)
+    {
+        $this->userRepository->create($request);
+    }
+
+
 }

@@ -33,6 +33,11 @@
                             @endforeach
                         </div>
                     @endif
+                    @if(Session::get("success"))
+                        <div class="alert alert-success w-50">
+                            {{Session::get("success")}}
+                        </div>
+                    @endif
                     <form action="{{url("/login")}}" style="width: 50%" method="POST">
                         @csrf
                         <div class="mb-3">
