@@ -14,15 +14,16 @@ class CategoryRepository implements CategoryInterfaces
     {
         $category = new Category();
         $category->name = $request->name;
+        $category->descriptions = $request->descriptions;
         $category->slug = Service::makeSlug($request->name);
         $category->save();
 
         return $category;
     }
 
-    public function findSameNameOrSameSlug($request)
+    public function findSameNameOrSameSlug($request,$id = 0)
     {
-        return Category::where("slug",Service::makeSlug($request->name))->where("name",$request->name)->first();
+        return Category::where("slug",Service::makeSlug($request->name))->where("name",$request->name)->whereNotIn("id",[$id])->first();
     }
 
     public function listAll($table_name,$order_type)

@@ -30,7 +30,12 @@ Route::middleware("guest")->group(function (){
     Route::get("/login/google/callback",[UserController::class,"loginWithGoogleCallback"]);
 });
 
+Route::redirect("/admin","/admin/dashboard");
+
 Route::prefix("/admin")->middleware("is_admin")->group(function (){
+
+
+
     Route::get("/dashboard",[AdminController::class,"index"]);
     Route::prefix("/articles")->group(function (){
         Route::get("/",[ArticleController::class,"index"]);
@@ -38,7 +43,8 @@ Route::prefix("/admin")->middleware("is_admin")->group(function (){
         Route::post("/",[ArticleController::class,"store"]);
         Route::get("/{articles}/edit",[ArticleController::class,"edit"]);
         Route::put("/{articles}",[ArticleController::class,"update"]);
-        Route::post("/{articles}/switch-status",[ArticleController::class,"switch_status"]); // Change article's is_draft column.
+        Route::post("/draft",[ArticleController::class,"store_draft"]); // Store draft articles.
+        Route::put("/{articles}/draft",[ArticleController::class,"store_draft"]); // Store draft articles.
         Route::post("/{articles}/switch-visibility",[ArticleController::class,"switch_visibility"]); // Change article's is_active column.
         Route::delete("/{articles}",[ArticleController::class,"delete"]);
     });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Http\Services\CategoryService;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
@@ -18,7 +19,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = $this->category_service->getAll("updated_at");
-        return view("",compact("categories"));
+        return view("admin_panel.categories.index",compact("categories"));
     }
 
     public function create()
@@ -28,8 +29,12 @@ class CategoryController extends Controller
 
     public function store(CategoryRequest $request)
     {
-        $this->category_service->create($request);
-        return redirect()->back()->with("succes","Başarılı bir şekilde kayıt edilmiştir.");
+        return $this->category_service->create($request);
+    }
+
+    public function edit(Category $category)
+    {
+        return view("admin_panel.categories.edit",compact("category"));
     }
 
 

@@ -6,7 +6,6 @@ namespace App\Http\Services;
 
 use App\Http\Repositories\Classes\CategoryRepository;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
 
 class CategoryService extends Service
 {
@@ -21,6 +20,7 @@ class CategoryService extends Service
 
         if(!$this->category_repository->findSameNameOrSameSlug($request)){
             $this->category_repository->create($request);
+            return redirect()->back()->with("success","You added category with successfully.");
         }else{
             return redirect()->back()->withErrors("This name already given another category.");
         }
@@ -28,6 +28,6 @@ class CategoryService extends Service
 
     public function getAll($table_name = "created_at",$order_type = "DESC")
     {
-        $this->category_repository->listAll($table_name,$order_type);
+        return $this->category_repository->listAll($table_name,$order_type);
     }
 }
