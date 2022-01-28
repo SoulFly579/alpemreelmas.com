@@ -47,6 +47,8 @@ Route::prefix("/admin")->middleware("is_admin")->group(function (){
         Route::put("/{articles}/draft",[ArticleController::class,"store_draft"]); // Store draft articles.
         Route::post("/{articles}/switch-visibility",[ArticleController::class,"switch_visibility"]); // Change article's is_active column.
         Route::delete("/{articles}",[ArticleController::class,"delete"]);
+
+        Route::post("/upload",[ArticleController::class,"upload"]);
     });
 
     Route::prefix("/categories")->group(function (){

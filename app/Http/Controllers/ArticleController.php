@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ArticleActiveRequest;
 use App\Http\Services\ArticleService;
 use App\Http\Services\CategoryService;
+use App\Http\Services\FileService;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -26,8 +29,15 @@ class ArticleController extends Controller
         return view("admin_panel.articles.create",compact("categories"));
     }
 
-    public function store()
+    public function store(ArticleActiveRequest $request)
     {
+        return $this->article_services->saveToDb($request);
+    }
 
+    public function upload(Request $request){
+        if($request->hasFile("title_image")){
+            return (new FileService("public","temp"))->storeImage($request->file("title_image"));
+        }
+        return "";
     }
 }
