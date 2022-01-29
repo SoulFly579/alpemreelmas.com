@@ -48,7 +48,6 @@ Route::prefix("/admin")->middleware("is_admin")->group(function (){
         Route::post("/{articles}/switch-visibility",[ArticleController::class,"switch_visibility"]); // Change article's is_active column.
         Route::delete("/{articles}",[ArticleController::class,"delete"]);
 
-        Route::post("/upload",[ArticleController::class,"upload"]);
     });
 
     Route::prefix("/categories")->group(function (){

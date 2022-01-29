@@ -27,6 +27,7 @@ class ArticleActiveRequest extends FormRequest
             "title"=>"required",
             "title_image"=>"required|image",
             "content" =>"required",
+            "category_ids" =>"required",
             "is_active"=>"required",
             "descriptions"=>"required"
         ];

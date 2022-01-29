@@ -10,16 +10,16 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    public $article_services;
+    public $article_service;
 
     public function __construct()
     {
-        $this->article_services = new ArticleService();
+        $this->article_service = new ArticleService();
     }
 
     public function index()
     {
-        $articles = $this->article_services->getAll("updated_at");
+        $articles = $this->article_service->getAll("updated_at");
         return view("admin_panel.articles.index",compact("articles"));
     }
 
@@ -31,13 +31,6 @@ class ArticleController extends Controller
 
     public function store(ArticleActiveRequest $request)
     {
-        return $this->article_services->saveToDb($request);
-    }
-
-    public function upload(Request $request){
-        if($request->hasFile("title_image")){
-            return (new FileService("public","temp"))->storeImage($request->file("title_image"));
-        }
-        return "";
+        return $this->article_service->saveToDb($request);
     }
 }

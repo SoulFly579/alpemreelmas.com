@@ -15,11 +15,10 @@ class ArticleRepository implements ArticleInterfaces
         $articles = new Article();
         $articles->title = $request->title;
         $articles->title_image = $request->destination_url ? $request->destination_url : null;
-        $articles->sub_content = substr($request->content,0,150);
         $articles->content = $request->content;
         $articles->slug = Service::makeSlug($request->title);
         $articles->is_draft = false;
-        $articles->is_active = $request->is_active ? "true" : "false";
+        $articles->is_active = $request->is_active == "true" ? true : false;
         $articles->descriptions = $request->descriptions;
         $articles->user_id = Auth::id();
         $articles->save();

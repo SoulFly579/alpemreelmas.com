@@ -17,7 +17,6 @@ class CreateArticlesTable extends Migration
             $table->id();
             $table->string("title");
             $table->longText("title_image")->nullable();
-            $table->text("sub_content")->nullable();
             $table->longText("content")->nullable();
             $table->string("slug");
             $table->boolean("is_draft")->default(1);
