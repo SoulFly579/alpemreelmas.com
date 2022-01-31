@@ -23,8 +23,7 @@
                         <td>{{$article->title}}</td>
                         <td>Get User</td>
                         <td><img src="{{asset($article->title_image)}}" class="img-fluid" width="300" height="150" /></td>
-                        {{-- <td>@if($article->getCategories->count() > 0) @foreach($article->getCategories as $category) {{$category->name.", "}} @endforeach @endif</td> --}}
-                        <td> - </td>
+                        <td>@if($article->getCategories->count() > 0) @foreach($article->getCategories as $index => $category){{$category->name}}@if($index < $article->getCategories()->count()-1), @endif @endforeach @endif</td>
                         <td>@if($article->is_draft) Draft @else Ready @endif</td>
                         <td>@if($article->is_active) Active @else Deactive @endif</td>
                         <td>Events</td>

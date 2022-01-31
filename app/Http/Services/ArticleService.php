@@ -41,4 +41,16 @@ class ArticleService extends Service
         return redirect()->back()->with("success","Article created with successful.");
     }
 
+    public function saveAsDraft($request)
+    {
+        $article = $this->article_repository->create($request,true);
+        if($request->category_ids && count($request->category_ids) > 0){
+            foreach ($request->category_ids as $category_id){
+                $this->article_categories_repository->create($category_id,$article->id);
+            }
+        }
+
+        return response(["msg"=>"Article saved as draft.","id"=>$article->id]);
+    }
+
 }

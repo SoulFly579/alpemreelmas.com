@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
     use HasFactory;
+
+    public function getCategories(){
+        return $this->belongsToMany(Category::class)->withPivot("category_id");
+    }
 }
+

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ArticleActiveRequest;
+use App\Http\Requests\ArticleDraftRequest;
 use App\Http\Services\ArticleService;
 use App\Http\Services\CategoryService;
 use App\Http\Services\FileService;
@@ -32,5 +33,10 @@ class ArticleController extends Controller
     public function store(ArticleActiveRequest $request)
     {
         return $this->article_service->saveToDb($request);
+    }
+
+    public function store_draft(ArticleDraftRequest $request)
+    {
+        return $this->article_service->saveAsDraft($request);
     }
 }

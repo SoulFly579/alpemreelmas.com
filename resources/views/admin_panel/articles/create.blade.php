@@ -37,7 +37,7 @@
                             @if($categories->count() > 0)
                                 <div class="col-12 mb-20">
                                     <label for="name">Categories</label>
-                                    <select class="form-control bSelect" multiple required name="category_ids[]" id="category_ids">
+                                    <select class="form-control bSelect" multiple required name="category_ids[]" id="category_ids" data-live-search="true">
                                         @foreach($categories as $category)
                                             <option value="{{$category->id}}">{{$category->name}}</option>
                                         @endforeach
@@ -83,5 +83,60 @@
     <script>
         CKEDITOR.replace( 'editor' );
         $('.dropify').dropify();
+
+        // save as a draft
+        let id;
+
+        const saveAsDraft = ()=>{
+            if(id){
+                $.ajax({
+                    url:`{{url("/admin/articles")}}/${id}/draft`,
+                    type:"POST",
+                    data:{
+                        "_token":"{{csrf_token()}}",
+                        "_method":"PUT",
+                        "title": $("input[name='title']").val(),
+                        "category_ids": $("select[name='category_ids']").val(),
+                        "descriptions": $("textarea[name='descriptions']").val(),
+                        "content": $("textarea[name='content']").val(),
+                        "is_active": $("select[name='is_active']").val(),
+                    },
+                    success: (response)=>{
+                        id = response.id
+                        console.log(response.msg)
+                    }
+                })
+            }else{
+                $.ajax({
+                    url:"{{url("/admin/articles/draft")}}",
+                    type:"POST",
+                    data:{
+                        "_token":"{{csrf_token()}}",
+                        "title": $("input[name='title']").val(),
+                        "category_ids": $("select[name='category_ids']").val(),
+                        "descriptions": $("textarea[name='descriptions']").val(),
+                        "content": $("textarea[name='content']").val(),
+                        "is_active": $("select[name='is_active']").val(),
+                    },
+                    success: (response)=>{
+                        id = response.id
+                        console.log(response.msg)
+                    }
+                })
+            }
+        }
+
+        $("input").on("change",saveAsDraft)
+        $("select").on("change",saveAsDraft)
+        $("textarea").on("change",saveAsDraft)
+        $("#editor").on("change",saveAsDraft)
+
+        window.addEventListener('beforeunload', function (e) {
+            // TODO run saveAsDraft
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+
     </script>
 @endsection

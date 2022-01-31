@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleRepository implements ArticleInterfaces
 {
-    public function create($request){
+    public function create($request,$draft = false){
         $articles = new Article();
         $articles->title = $request->title;
         $articles->title_image = $request->destination_url ? $request->destination_url : null;
         $articles->content = $request->content;
         $articles->slug = Service::makeSlug($request->title);
-        $articles->is_draft = false;
-        $articles->is_active = $request->is_active == "true" ? true : false;
+        $articles->is_draft = $draft;
+        $articles->is_active = $request->is_active == "true" && !$draft ? true : false;
         $articles->descriptions = $request->descriptions;
         $articles->user_id = Auth::id();
         $articles->save();

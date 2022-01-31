@@ -44,7 +44,7 @@ Route::prefix("/admin")->middleware("is_admin")->group(function (){
         Route::get("/{articles}/edit",[ArticleController::class,"edit"]);
         Route::put("/{articles}",[ArticleController::class,"update"]);
         Route::post("/draft",[ArticleController::class,"store_draft"]); // Store draft articles.
-        Route::put("/{articles}/draft",[ArticleController::class,"store_draft"]); // Store draft articles.
+        Route::put("/{articles}/draft",[ArticleController::class,"update_draft"]); // Store draft articles.
         Route::post("/{articles}/switch-visibility",[ArticleController::class,"switch_visibility"]); // Change article's is_active column.
         Route::delete("/{articles}",[ArticleController::class,"delete"]);
 
