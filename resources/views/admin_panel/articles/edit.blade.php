@@ -1,13 +1,46 @@
 @extends("admin_panel.layouts.master")
 @section("css")
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .image-preview:hover{
+            background:black;
+            opacity: 0.3;
+            transition: all ease 0.5s;
+        }
+
+        .image-preview{
+            position: relative;
+            height: 200px;
+            transition: all ease 0.5s;
+        }
+
+        .image-preview::after{
+            content: "";
+            position: absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%,-50%);
+            color: #303030;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .image-preview:hover::after{
+            content: "Image Preview";
+            color:black;
+        }
+
+        .image-preview img{
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
 @endsection
 @section("body")
     <div class="row">
         <div class="col-lg-12 col-12 mb-30">
             <div class="box">
                 <div class="box-head">
-                    <h4 class="title">Articles Add</h4>
+                    <h4 class="title">{{$article->title}}</h4>
                 </div>
                 <div class="box-body">
                     @if(Session::get("success"))
@@ -27,11 +60,17 @@
                         <div class="row mbn-20">
                             <div class="col-12 mb-20">
                                 <label for="name">Title</label>
-                                <input type="text" id="name" class="form-control" placeholder="Name" name="title" value="{{old("title")}}" required>
+                                <input type="text" id="name" class="form-control" placeholder="Name" name="title" value="{{$article->title}}" required>
                             </div>
                             <div class="col-12 mb-20">
-                                <label for="title_image">Article Title Image</label>
-                                <input class="dropify" type="file" name="title_image" id="title_image"/>
+                                <div class="row">
+                                    <div class="col-md-6"><label for="">Image Preview</label> @if($article->title_image) <div class="w-100 d-flex justify-content-center align-items-center image-preview"><img src="{{asset($article->title_image)}}" class="img-fluid w-100"></div> @else <span>No preview</span> @endif</div>
+                                    <div class="col-md-6">
+                                        <label for="title_image">Article Title Image</label>
+                                        <input class="dropify" type="file" name="title_image" id="title_image"/>
+                                    </div>
+                                </div>
+
                             </div>
 
                             @if($categories->count() > 0)
@@ -39,24 +78,26 @@
                                     <label for="name">Categories</label>
                                     <select class="form-control bSelect" multiple name="category_ids[]" id="category_ids" data-live-search="true">
                                         @foreach($categories as $category)
-                                            <option value="{{$category->id}}" {{ old("category_ids") && in_array($category->id,old("category_ids")) ? "selected" : null}}>{{$category->name}}</option>
+                                            @foreach($article->getCategories as $article_category)
+                                                <option value="{{$category->id}}" {{ $article_category->id == $category->id ? "selected" : null}}>{{$category->name}}</option>
+                                            @endforeach
                                         @endforeach
                                     </select>
                                 </div>
                             @endif
                             <div class="col-12 mb-20">
                                 <label for="name">Content</label>
-                                <textarea name="content" id="editor" cols="30" rows="10" name="content" >{{old("content")}}</textarea>
+                                <textarea name="content" id="editor" cols="30" rows="10" name="content" >{{$article->content}}</textarea>
                             </div>
                             <div class="col-12 mb-20">
                                 <label for="descriptions">Descriptions</label>
-                                <textarea type="text" id="descriptions" class="form-control" placeholder="Descriptions" name="descriptions">{{old("descriptions")}}</textarea>
+                                <textarea type="text" id="descriptions" class="form-control" placeholder="Descriptions" name="descriptions">{{$article->descriptions}}</textarea>
                             </div>
                             <div class="col-12 mb-20">
                                 <label>Active Status</label>
                                 <select class="form-control bSelect" name="is_active">
-                                    <option value="true" {{old("is_active") == "true" ? "selected" : null}}  >Active</option>
-                                    <option value="false" {{old("is_active") == "false" ? "selected" : null}}>Deactive</option>
+                                    <option value="true" {{$article->is_active == "true" ? "selected" : null}}  >Active</option>
+                                    <option value="false" {{$article->is_active == "false" ? "selected" : null}}>Deactive</option>
                                 </select>
                             </div>
                             <div class="mt-50 d-flex w-100">
@@ -87,14 +128,12 @@
         $('.dropify').dropify();
         $("#draftBtn").click((e)=>{
             e.preventDefault()
-            $('#articles').attr('action', "{{url("admin/articles/draft")}}").submit();
+            $('#articles').attr('action', "{{url("admin/articles/$article->id/draft")}}").submit();
         })
 
         $("#publishBtn").click((e)=>{
             e.preventDefault()
-            $('#articles').attr('action', "{{url("admin/articles/publish")}}").submit();
+            $('#articles').attr('action', "{{url("admin/articles/$article->id/publish")}}").submit();
         })
-
-
     </script>
 @endsection

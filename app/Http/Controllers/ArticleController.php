@@ -6,8 +6,7 @@ use App\Http\Requests\ArticleActiveRequest;
 use App\Http\Requests\ArticleDraftRequest;
 use App\Http\Services\ArticleService;
 use App\Http\Services\CategoryService;
-use App\Http\Services\FileService;
-use Illuminate\Http\Request;
+use App\Models\Article;
 
 class ArticleController extends Controller
 {
@@ -30,7 +29,7 @@ class ArticleController extends Controller
         return view("admin_panel.articles.create",compact("categories"));
     }
 
-    public function store(ArticleActiveRequest $request)
+    public function publish(ArticleActiveRequest $request)
     {
         return $this->article_service->saveToDb($request);
     }
@@ -38,5 +37,16 @@ class ArticleController extends Controller
     public function store_draft(ArticleDraftRequest $request)
     {
         return $this->article_service->saveAsDraft($request);
+    }
+
+    public function edit(Article $article)
+    {
+        $categories = (new CategoryService())->getAll();
+        return view("admin_panel.articles.edit",compact("article","categories"));
+    }
+
+    public function update_draft(Article $article,ArticleDraftRequest $request)
+    {
+        return ;
     }
 }
