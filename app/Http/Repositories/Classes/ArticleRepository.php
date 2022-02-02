@@ -39,7 +39,8 @@ class ArticleRepository implements ArticleInterfaces
         $article->descriptions = $request->descriptions;
         $article->slug = Service::makeSlug($request->title);
         $article->is_active = $request->is_active == "true" ? true : false;
-        return array($article->save(),$article->id);
+        $article->title_image = $request->destination_url ? $request->destination_url : null;
+        return $article->save();
     }
 
     public function publish($request,$article)

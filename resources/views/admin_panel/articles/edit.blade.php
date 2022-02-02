@@ -4,7 +4,7 @@
     <style>
         .image-preview:hover{
             background:black;
-            opacity: 0.3;
+            opacity: 0.6;
             transition: all ease 0.5s;
         }
 
@@ -57,6 +57,7 @@
                     @endif
                     <form method="POST" id="articles" enctype="multipart/form-data">
                         @csrf
+                        @method("PUT")
                         <div class="row mbn-20">
                             <div class="col-12 mb-20">
                                 <label for="name">Title</label>
@@ -64,7 +65,7 @@
                             </div>
                             <div class="col-12 mb-20">
                                 <div class="row">
-                                    <div class="col-md-6"><label for="">Image Preview</label> @if($article->title_image) <div class="w-100 d-flex justify-content-center align-items-center image-preview"><img src="{{asset($article->title_image)}}" class="img-fluid w-100"></div> @else <span>No preview</span> @endif</div>
+                                    <div class="col-md-6"><label for="">Image Preview</label> @if($article->title_image) <div class="w-100 d-flex justify-content-center align-items-center image-preview"><img src="{{asset($article->title_image)}}" class="img-fluid w-100"></div> @else <span class="d-flex justify-content-center align-items-center" style="height: 200px">No preview</span> @endif</div>
                                     <div class="col-md-6">
                                         <label for="title_image">Article Title Image</label>
                                         <input class="dropify" type="file" name="title_image" id="title_image"/>
@@ -78,9 +79,11 @@
                                     <label for="name">Categories</label>
                                     <select class="form-control bSelect" multiple name="category_ids[]" id="category_ids" data-live-search="true">
                                         @foreach($categories as $category)
-                                            @foreach($article->getCategories as $article_category)
-                                                <option value="{{$category->id}}" {{ $article_category->id == $category->id ? "selected" : null}}>{{$category->name}}</option>
-                                            @endforeach
+                                            @if(in_array($category->id,array_column($article->getCategories->toArray(),"id")))
+                                                <option value="{{$category->id}}" selected>{{$category->name}}</option>
+                                            @else
+                                                <option value="{{$category->id}}">{{$category->name}}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

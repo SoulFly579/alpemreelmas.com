@@ -26,11 +26,7 @@ class ArticleService extends Service
 
     public function saveToDb($request)
     {
-        if($request->hasFile("title_image")){
-            $request->destination_url = (new FileService("public","articles"))->storeImage($request->file("title_image"));
-        }else{
-            return redirect()->back()->withErrors("Please upload file.");
-        }
+        $request = parent::checkAndMoveImages($request,$request->file("title_image"),"public","articles");
         // TODO Check how much correct which coming as a result.
         // TODO create pivot table for articles and categories relationship.
         // TODO check DB::transaction function in here.
@@ -48,11 +44,7 @@ class ArticleService extends Service
 
     public function saveAsDraft($request)
     {
-        if($request->hasFile("title_image")){
-            $request->destination_url = (new FileService("public","articles"))->storeImage($request->file("title_image"));
-        }else{
-            return redirect()->back()->withErrors("Please upload file.");
-        }
+        $request = parent::checkAndMoveImages($request,$request->file("title_image"),"public","articles");
         list($result,$id) = $this->article_repository->create($request);
 
         !$result ? abort(500): null;
@@ -63,6 +55,20 @@ class ArticleService extends Service
         }
 
         return redirect("/admin/articles")->with("success","Article saved as draft.");
+    }
+
+    public function updateDraft($article,$request)
+    {
+        $request = parent::checkAndMoveImages($request,$request->file("title_image"),"public","articles");
+        $this->article_repository->updateDraft($article,$request);
+        if($request->category_ids && is_array($request->category_ids)){
+            foreach ($request->category_ids as $category_id){
+                $this->article_categories_repository->update($category_id,$article->id);
+            }
+        }
+
+        return redirect("/admin/articles")->with("success","Article updated as draft.");
+
     }
 
 }
